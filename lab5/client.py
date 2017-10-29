@@ -42,15 +42,18 @@ def chat_client( ):
                     sys.exit()
                 else:
                     # print data
-                    sys.stdout.write(data)
-                    sys.stdout.write('[Me] ');
+                    print(data.decode('utf-8'))
+                    # sys.stdout.write(data.decode('utf-8'))
+                    # sys.stdout.write('[Me] ');
+                    print('[Me] ')
                     sys.stdout.flush()
 
             else:
                 # user entered a message
-                msg = sys.stdin.readline()
+                msg = input('Me: ')
                 s.send(msg.encode('utf-8'))
-                sys.stdout.write('[Me] ');
+                # sys.stdout.write('[Me] ');
+                # print('Me ')
                 sys.stdout.flush()
 
 
