@@ -1,61 +1,16 @@
-# chat_client.py
+#!/usr/bin/env python
 
-import sys
 import socket
-import select
 
+TCP_IP = '127.0.0.1'
+TCP_PORT = 1234
+BUFFER_SIZE = 1024
+MESSAGE = raw_input('Message: ')
 
-def chat_client( ):
-    if (len(sys.argv) < 3):
-        print('Usage : python chat_client.py hostname port')
-        sys.exit()
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((TCP_IP, TCP_PORT))
+s.send(str(MESSAGE))
+data = s.recv(BUFFER_SIZE)
+s.close()
 
-    host = sys.argv[1]
-    port = int(sys.argv[2])
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(2)
-
-    # connect to remote host
-    try:
-        s.connect((host, port))
-    except:
-        print('Unable to connect')
-        sys.exit()
-
-    print('Connected to remote host. You can start sending messages')
-    sys.stdout.write('[Me] ');
-    sys.stdout.flush()
-
-    while 1:
-        socket_list = [sys.stdin, s]
-
-        # Get the list sockets which are readable
-        ready_to_read, ready_to_write, in_error = select.select(socket_list, [], [])
-
-        for sock in ready_to_read:
-            if sock == s:
-                # incoming message from remote server, s
-                data = sock.recv(4096)
-                if not data:
-                    print('\nDisconnected from chat server')
-                    sys.exit()
-                else:
-                    # print data
-                    print(data.decode('utf-8'))
-                    # sys.stdout.write(data.decode('utf-8'))
-                    # sys.stdout.write('[Me] ');
-                    print('[Me] ')
-                    sys.stdout.flush()
-
-            else:
-                # user entered a message
-                msg = input('Me: ')
-                s.send(msg.encode('utf-8'))
-                # sys.stdout.write('[Me] ');
-                # print('Me ')
-                sys.stdout.flush()
-
-
-if __name__ == "__main__":
-    sys.exit(chat_client())
+print('Response: ' + data.decode())
